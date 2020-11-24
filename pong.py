@@ -35,16 +35,8 @@ pygame.mouse.set_visible(0)
 # Speed in pixels per frame
 left_y_speed = 0
 
-# Current position
-# left_x_coord = 10
-# left_y_coord = 10
-
 # Speed in pixels per frame
 right_y_speed = 0
-
-# Current position
-# right_x_coord = 10
-# right_y_coord = 10
 
 left_rect = pygame.Rect(RECT_OFFSET_X, RECT_OFFSET_Y, RECT_WIDTH, RECT_HEIGHT)
 right_rect = pygame.Rect(WIDTH - RECT_OFFSET_X, RECT_OFFSET_Y, RECT_WIDTH, RECT_HEIGHT)
@@ -94,3 +86,6 @@ while not done:
     pygame.draw.rect(screen, WHITE, right_rect, 0)
 
     pygame.display.flip()
+
+# Close everything down
+pygame.quit()

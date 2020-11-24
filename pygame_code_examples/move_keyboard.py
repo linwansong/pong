@@ -66,7 +66,11 @@ while not done:
         elif event.type == pygame.KEYDOWN:
             # Figure out if it was an arrow key. If so
             # adjust speed.
-            if event.key == pygame.K_UP:
+            if event.key == pygame.K_LEFT:
+                x_speed = -3
+            elif event.key == pygame.K_RIGHT:
+                x_speed = 3
+            elif event.key == pygame.K_UP:
                 y_speed = -3
             elif event.key == pygame.K_DOWN:
                 y_speed = 3
