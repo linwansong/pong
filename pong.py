@@ -16,8 +16,6 @@ RECT_OFFSET_Y = 20
 RECT_WIDTH = 5
 RECT_HEIGHT = 50
 
-BALL_SIZE = 16
-
 class Ball:
     """
     Class to keep track of a ball's location and vector.
@@ -27,13 +25,33 @@ class Ball:
         self.y = HEIGHT/2
         self.speed = 1
         self.direction = random.uniform(0, 1) * 2 * math.pi
+        self.size = 16
+        cos = math.cos(self.direction)
+        sin = math.sin(self.direction)
 
-    def change_direction(self, direction):
-        self.direction = direction
+        while cos < sin:
+            self.direction = random.uniform(0, 1) * 2 * math.pi
+            cos = math.cos(self.direction)
+            sin = math.sin(self.direction)
 
     def move_ip(self):
         self.x += math.cos(self.direction) * self.speed
         self.y += math.sin(self.direction) * self.speed
+
+    def collide(self, rectangle, within):
+        if within:
+            if self.y >= rectangle.top + rectangle.height - self.size or self.y <= rectangle.top + self.size:
+                self.direction *= -1
+            if self.x >= rectangle.left + rectangle.width - self.size or self.x <= rectangle.left + self.size:
+                self.direction = (math.pi - self.direction)
+
+        else: # change to reflect rectangle within circle
+            if self.y <= rectangle.top + rectangle.height - self.size and self.y >= rectangle.top + self.size:
+                self.direction *= -1
+
+            if self.x <= rectangle.left + rectangle.width - self.size and self.x >= rectangle.left + self.size:
+                self.direction = (math.pi - self.direction)
+
   
  
 # Setup
@@ -69,8 +87,6 @@ pygame.display.flip()
 while not done:
     for event in pygame.event.get():
 
-        print(ball.x, ball.y)
-
 
         if event.type == pygame.QUIT:
             done = True
@@ -80,11 +96,13 @@ while not done:
             # adjust speed.
             if event.key == pygame.K_UP:
                 left_y_speed = -3
+    
             elif event.key == pygame.K_DOWN:
                 left_y_speed = 3
 
             elif event.key == pygame.K_w:
                 right_y_speed = -3
+
             elif event.key == pygame.K_s:
                 right_y_speed = 3
 
@@ -103,6 +121,9 @@ while not done:
     left_rect.move_ip(0, left_y_speed)
     right_rect.move_ip(0, right_y_speed)
     ball.move_ip()
+    ball.collide(SCREEN_BOUNDARIES, True)
+    ball.collide(left_rect, False)
+    ball.collide(right_rect, False)
 
     left_rect.clamp_ip(SCREEN_BOUNDARIES)
     right_rect.clamp_ip(SCREEN_BOUNDARIES)
@@ -112,7 +133,7 @@ while not done:
 
     pygame.draw.rect(screen, WHITE, left_rect, 0)
     pygame.draw.rect(screen, WHITE, right_rect, 0)
-    pygame.draw.circle(screen, WHITE, [ball.x, ball.y], BALL_SIZE)
+    pygame.draw.circle(screen, WHITE, [ball.x, ball.y], ball.size)
 
     pygame.display.flip()
 
